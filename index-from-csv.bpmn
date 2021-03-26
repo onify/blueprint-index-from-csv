@@ -88,15 +88,6 @@ users.forEach(async function(user) {
 })
 
 next(null, itemUsers);
-
-
-first_name
-last_name
-gender
-job_title
-company
-department
-email
 </bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_13egus5" sourceRef="transformUsers" targetRef="bulkIndex" />

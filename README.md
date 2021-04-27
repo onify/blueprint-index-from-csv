@@ -4,7 +4,7 @@
 
 # Onify Blueprint: Index objects from CSV-file
 
-Read a CSV file using PowerShell and transforms and bulk index data into Onify. Onify can read and index data from any data source, CSV is just one of many formats.
+Read a CSV file using PowerShell and transforms and bulk index data into Onify. Onify can read and index data from any data source, CSV is just one of many formats. When indexed, create a workspace to show the results.
 
 ![alt text](flow.png "Flow")
 

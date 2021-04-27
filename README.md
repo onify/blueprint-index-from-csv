@@ -1,6 +1,10 @@
-# Onify Blueprint: Index objects from CSV-file
+![Onify Blueprints](https://files.readme.io/8ba3f14-onify-blueprints-logo.png)
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+
+# Onify Blueprint: Index objects from CSV-file
+
+Read a CSV file using PowerShell and transforms and bulk index data into Onify. Onify can read and index data from any data source, CSV is just one of many formats.
 
 ![alt text](flow.png "Flow")
 

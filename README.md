@@ -12,7 +12,7 @@ Read a CSV file using PowerShell and transforms and bulk index data into Onify. 
 
 ## Requirements
 
-* Onify Hub v2
+* Onify Hub API 2.3.0 or later
 * Onify Agent (tagged `agent` and running Windows)
 * Onify Flow license
 * Camunda Modeler 4.4 or later 

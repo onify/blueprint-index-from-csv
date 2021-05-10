@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_1m70y72" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.5.0">
-  <bpmn:message id="Message_1tveek5" name="readCSVfile" />
   <bpmn:process id="blueprint-index-from-csv" name="Onify Blueprint: Index objects from CSV-file" isExecutable="true">
     <bpmn:sequenceFlow id="Flow_0izjmr2" sourceRef="StartEvent" targetRef="readCSVfile" />
     <bpmn:endEvent id="EndEvent" name="Done indexing">
       <bpmn:incoming>Flow_02i7aej</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:intermediateCatchEvent id="waitForReadTask" name="Wait for&#10;read task">
+    <bpmn:intermediateCatchEvent id="agentTaskDone" name="Wait for&#10;read task">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:outputParameter name="CSVTaskResult">${content.output.result.response}</camunda:outputParameter>
@@ -14,7 +13,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_124zfr6</bpmn:incoming>
       <bpmn:outgoing>Flow_13w4uso</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0k9c7dx" messageRef="Message_1tveek5" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0k9c7dx" />
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="readCSVfile" name="Read data from CSV file">
       <bpmn:extensionElements>
@@ -37,12 +36,15 @@
           </camunda:inputOutput>
           <camunda:connectorId>onifyApiRequest</camunda:connectorId>
         </camunda:connector>
+        <camunda:properties>
+          <camunda:property name="alert_stateid" value="agentTaskDone" />
+        </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0izjmr2</bpmn:incoming>
       <bpmn:outgoing>Flow_124zfr6</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_13w4uso" sourceRef="waitForReadTask" targetRef="transformUsers" />
-    <bpmn:sequenceFlow id="Flow_124zfr6" sourceRef="readCSVfile" targetRef="waitForReadTask" />
+    <bpmn:sequenceFlow id="Flow_13w4uso" sourceRef="agentTaskDone" targetRef="transformUsers" />
+    <bpmn:sequenceFlow id="Flow_124zfr6" sourceRef="readCSVfile" targetRef="agentTaskDone" />
     <bpmn:startEvent id="StartEvent" name="Start indexing">
       <bpmn:outgoing>Flow_0izjmr2</bpmn:outgoing>
     </bpmn:startEvent>
@@ -87,8 +89,7 @@ users.forEach(async function(user) {
     itemUsers.push(itemUser);
 })
 
-next(null, itemUsers);
-</bpmn:script>
+next(null, itemUsers);</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_13egus5" sourceRef="transformUsers" targetRef="bulkIndex" />
     <bpmn:sequenceFlow id="Flow_02i7aej" sourceRef="bulkIndex" targetRef="EndEvent" />
@@ -99,7 +100,7 @@ next(null, itemUsers);
     <bpmn:textAnnotation id="TextAnnotation_1y3iaw4">
       <bpmn:text>Wait for script on agent to finish and return result</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_0nys32k" sourceRef="waitForReadTask" targetRef="TextAnnotation_1y3iaw4" />
+    <bpmn:association id="Association_0nys32k" sourceRef="agentTaskDone" targetRef="TextAnnotation_1y3iaw4" />
     <bpmn:textAnnotation id="TextAnnotation_0q4cdii">
       <bpmn:text>Transform data from CSV file to user items/objects</bpmn:text>
     </bpmn:textAnnotation>
@@ -111,18 +112,6 @@ next(null, itemUsers);
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="blueprint-index-from-csv">
-      <bpmndi:BPMNShape id="TextAnnotation_1k8s0wk_di" bpmnElement="TextAnnotation_1k8s0wk">
-        <dc:Bounds x="400" y="80" width="170" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1y3iaw4_di" bpmnElement="TextAnnotation_1y3iaw4">
-        <dc:Bounds x="490" y="300" width="150" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0q4cdii_di" bpmnElement="TextAnnotation_0q4cdii">
-        <dc:Bounds x="690" y="80" width="160" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_04s2bsg_di" bpmnElement="TextAnnotation_04s2bsg">
-        <dc:Bounds x="810" y="300" width="99.99305040770942" height="40.02965159377317" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_02i7aej_di" bpmnElement="Flow_02i7aej">
         <di:waypoint x="850" y="200" />
         <di:waypoint x="912" y="200" />
@@ -149,7 +138,7 @@ next(null, itemUsers);
           <dc:Bounds x="895" y="225" width="71" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1nqtjb6_di" bpmnElement="waitForReadTask">
+      <bpmndi:BPMNShape id="Event_1nqtjb6_di" bpmnElement="agentTaskDone">
         <dc:Bounds x="472" y="182" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="469" y="225" width="46" height="27" />
@@ -169,6 +158,18 @@ next(null, itemUsers);
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_08pf7oz_di" bpmnElement="transformUsers">
         <dc:Bounds x="590" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1k8s0wk_di" bpmnElement="TextAnnotation_1k8s0wk">
+        <dc:Bounds x="400" y="80" width="170" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1y3iaw4_di" bpmnElement="TextAnnotation_1y3iaw4">
+        <dc:Bounds x="490" y="300" width="150" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0q4cdii_di" bpmnElement="TextAnnotation_0q4cdii">
+        <dc:Bounds x="690" y="80" width="160" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_04s2bsg_di" bpmnElement="TextAnnotation_04s2bsg">
+        <dc:Bounds x="810" y="300" width="99.99305040770942" height="40.02965159377317" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_01mwwvm_di" bpmnElement="Association_01mwwvm">
         <di:waypoint x="388" y="160" />
